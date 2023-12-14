@@ -1,0 +1,73 @@
+<style>
+  .show-more-button {
+    background-color: #87cefa; /* LightSkyBlue color */
+    color: #ffffff; /* White text color */
+    padding: 5px 10px; /* Reduced padding for a smaller button */
+    border: none; /* Remove border */
+    cursor: pointer; /* Change cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+  }
+
+  .show-more-button:hover {
+    background-color: #add8e6; /* Darker LightSkyBlue color on hover */
+  }
+</style>
+
+<div class="news">
+  {% if site.news != blank -%}
+    {%- assign news_size = site.news | size -%}
+    <div class="table-responsive" {% if include.limit and site.announcements.scrollable and news_size > 3 %}style="max-height: 60vw"{% endif %}>
+      <table class="table table-sm table-borderless">
+        {%- assign news = site.news | reverse -%}
+        {% if include.limit and site.announcements.limit %}
+          {% assign news_limit = site.announcements.limit %}
+        {% else %}
+          {% assign news_limit = news_size %}
+        {% endif %}
+        {% for item in news limit: 5 %}
+          <tr class="news-row">
+            <th scope="row" style="width: 20%">{{ item.date | date: "%b, %Y" }}</th>
+            <td>
+              {% if item.inline -%}
+                {{ item.content | remove: '<p>' | remove: '</p>' | emojify }}
+              {%- else -%}
+                <a class="news-title" href="{{ item.url | relative_url }}">{{ item.title }}</a>
+              {%- endif %}
+            </td>
+          </tr>
+        {%- endfor %}
+        {% for item in news offset: 5 %}
+          <tr class="hidden-row" style="display: none;">
+            <th scope="row" style="width: 20%">{{ item.date | date: "%b, %Y" }}</th>
+            <td>
+              {% if item.inline -%}
+                {{ item.content | remove: '<p>' | remove: '</p>' | emojify }}
+              {%- else -%}
+                <a class="news-title" href="{{ item.url | relative_url }}">{{ item.title }}</a>
+              {%- endif %}
+            </td>
+          </tr>
+        {%- endfor %}
+      </table>
+      <div class="text-center">
+        <button class="show-more-button" id="toggleButton" onclick="toggleRows()">Show More</button>
+      </div>
+    </div>
+  {%- else -%}
+    <p>No news so far...</p>
+  {%- endif %}
+</div>
+
+<script>
+  var showMoreButton = document.getElementById('toggleButton');
+  var hiddenRows = document.querySelectorAll('.hidden-row');
+
+  function toggleRows() {
+    hiddenRows.forEach(function(row) {
+      row.style.display = (row.style.display === 'none' || row.style.display === '') ? 'table-row' : 'none';
+    });
+
+    showMoreButton.innerText = (showMoreButton.innerText === 'Show More') ? 'Show Less' : 'Show More';
+  }
+</script>
+
