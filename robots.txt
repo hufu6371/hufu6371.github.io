@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://hufu6371.github.io/sitemap.xml
